@@ -1,0 +1,208 @@
+package Dashboard;
+
+import java.awt.EventQueue;
+import java.sql.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import java.awt.Font;
+
+import net.proteanit.sql.DbUtils;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Color;
+
+
+public class Order extends JFrame {
+
+    private static final long serialVersionUID = 1L;
+    protected static final String Dbutils = null;
+    private JPanel contentPane;
+    private JTable table;
+    private Connection con; // Added Connection object
+    private JTextField textid;
+    private JTextField textname;
+    private JTextField textdes;
+    private JTextField textprice;
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    Order frame = new Order();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the frame.
+     */
+    public Order() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 743, 481);
+        contentPane = new JPanel();
+        contentPane.setBackground(new Color(128, 64, 64));
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(344, 41, 335, 163);
+        contentPane.add(scrollPane);
+
+        table = new JTable();
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Get the selected row index
+                int selectedRow = table.getSelectedRow();
+                
+                // Check if a row is selected and it's a valid row index
+                if (selectedRow >= 0 && selectedRow < table.getRowCount()) {
+                    // Get the data from the selected row
+                    String pro_id = table.getValueAt(selectedRow, 0).toString();
+                    String pro_name = table.getValueAt(selectedRow, 1).toString();
+                    String pro_des = table.getValueAt(selectedRow, 2).toString();
+                    String pro_price = table.getValueAt(selectedRow, 3).toString();
+
+                    // Set the values to the corresponding text fields
+                    textid.setText(pro_id);
+                    textname.setText(pro_name);
+                    textdes.setText(pro_des);
+                    textprice.setText(pro_price);
+                }
+            }
+        });
+
+
+        scrollPane.setViewportView(table);
+        table.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+                    "PRO_ID", "PRO_NAME", "PRO_DES", "PRO_PRICE"
+                }
+        ));
+
+        JButton Show = new JButton("SHOW ITEMS");
+        Show.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Class.forName("oracle.jdbc.driver.OracleDriver");
+                    con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "hr", "jeena2001");
+                    Statement st =con.createStatement();
+                    
+                    ResultSet rs =st.executeQuery(" select * from product");
+                    table.setModel(DbUtils.resultSetToTableModel(rs));
+                    
+                } catch (ClassNotFoundException | SQLException ex) {
+                    ex.printStackTrace();
+                    
+                } finally {
+                    try {
+                        if (con != null) {
+                            con.close();
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        Show.setBounds(47, 38, 126, 33);
+        contentPane.add(Show);
+        
+        JLabel lblid = new JLabel("pro_id");
+        lblid.setFont(new Font("Tahoma", Font.BOLD, 15));
+        lblid.setBounds(12, 136, 71, 25);
+        contentPane.add(lblid);
+        
+        JLabel lblname = new JLabel("pro_name");
+        lblname.setFont(new Font("Tahoma", Font.BOLD, 15));
+        lblname.setBounds(12, 191, 96, 25);
+        contentPane.add(lblname);
+        
+        JLabel lbldes = new JLabel("pro_des");
+        lbldes.setFont(new Font("Tahoma", Font.BOLD, 15));
+        lbldes.setBounds(12, 239, 71, 25);
+        contentPane.add(lbldes);
+        
+        JLabel lblprice = new JLabel("pro_price");
+        lblprice.setFont(new Font("Tahoma", Font.BOLD, 15));
+        lblprice.setBounds(12, 296, 85, 25);
+        contentPane.add(lblprice);
+        
+        textid = new JTextField();
+        textid.setBounds(134, 142, 96, 19);
+        contentPane.add(textid);
+        textid.setColumns(10);
+        
+        textname = new JTextField();
+        textname.setBounds(134, 185, 96, 19);
+        contentPane.add(textname);
+        textname.setColumns(10);
+        
+        textdes = new JTextField();
+        textdes.setBounds(134, 236, 96, 19);
+        contentPane.add(textdes);
+        textdes.setColumns(10);
+        
+        textprice = new JTextField();
+        textprice.setBounds(134, 293, 96, 19);
+        contentPane.add(textprice);
+        textprice.setColumns(10);
+        
+        JButton btnadd = new JButton("BUY NOW");
+        btnadd.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int option = JOptionPane.showOptionDialog(contentPane, " Thank You...Order placed successfully!", "Success", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                if (option == JOptionPane.OK_OPTION) {
+                    try {
+                        Class.forName("oracle.jdbc.driver.OracleDriver");
+                        con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "hr", "jeena2001");
+                        Statement st = con.createStatement();
+                        
+                        ResultSet rs = st.executeQuery("select * from product");
+                        
+                        Dashboard dashboard = new Dashboard();
+                        dashboard.setVisible(true);
+                        
+                        dispose();
+                    } catch (ClassNotFoundException | SQLException ex) {
+                        ex.printStackTrace();
+                      
+                    } finally {
+                        try {
+                            if (con != null) {
+                                con.close();
+                            }
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+
+        btnadd.setFont(new Font("Tahoma", Font.ITALIC, 20));
+        btnadd.setBounds(96, 386, 134, 33);
+        contentPane.add(btnadd);
+    }
+}
