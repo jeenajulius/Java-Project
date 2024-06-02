@@ -1,0 +1,132 @@
+package Dashboard;
+
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.ImageIcon;
+
+public class Dashboard {
+
+    JFrame frame;
+    private JFrame SignupFrame; // New frame for sign-up
+    private JFrame LoginFrame; // New frame for login
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    Dashboard window = new Dashboard();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public Dashboard() {
+        initialize();
+    }
+
+    private void initialize() {
+        frame = new JFrame();
+        frame.setBounds(100, 100, 870, 515);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(null);
+        
+        JLabel lblNewLabel = new JLabel("New label");
+        lblNewLabel.setIcon(new ImageIcon("C:\\Users\\jeena\\OneDrive\\Desktop\\New folder\\net link\\mob white.png"));
+        lblNewLabel.setBounds(10, 10, 629, 458);
+        frame.getContentPane().add(lblNewLabel);
+        
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(64, 128, 128));
+        panel.setForeground(new Color(128, 64, 64));
+        panel.setBounds(637, 0, 219, 478);
+        frame.getContentPane().add(panel);
+        panel.setLayout(null);
+        
+        JButton btnLogin = new JButton("Login");
+        btnLogin.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            Login log = new Login(); 
+                log.main(null);
+                frame.dispose();// Call method to open login frame
+            }
+        });
+        btnLogin.setBackground(new Color(128, 128, 128));
+        btnLogin.setFont(new Font("Times New Roman", Font.ITALIC, 20));
+        btnLogin.setBounds(47, 290, 128, 56);
+        panel.add(btnLogin);
+        
+        JButton btnSignUp = new JButton("Signup");
+        btnSignUp.setBounds(47, 68, 128, 65);
+        panel.add(btnSignUp);
+        btnSignUp.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Signup sign = new Signup(); 
+                sign.main(null);
+                frame.dispose();// Call method to open sign-up frame
+            }
+        });
+        btnSignUp.setBackground(new Color(128, 128, 128));
+        btnSignUp.setFont(new Font("Times New Roman", Font.ITALIC, 20));
+    }
+
+    // Method to open sign-up frame
+    private void openSignUpFrame() {
+        frame.dispose(); // Dispose of current frame
+        SignupFrame = new JFrame("Signup");
+        SignupFrame.setBounds(100, 100, 400, 300); // Set dimensions as needed
+        
+        // Add sign-up components to signUpFrame as needed
+        // Example:
+        JPanel signUpPanel = new JPanel();
+        signUpPanel.setBackground(Color.WHITE);
+        signUpPanel.setBounds(0, 0, 400, 300);
+        
+        JLabel signUpLabel = new JLabel("Signup Form");
+        signUpLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        signUpLabel.setBounds(125, 20, 150, 30);
+        signUpPanel.add(signUpLabel);
+        
+        // Add other components such as text fields, labels, buttons
+        
+        SignupFrame.getContentPane().add(signUpPanel);
+        SignupFrame.setVisible(true);
+    }
+    
+    // Method to open login frame
+    private void openLoginFrame() {
+        frame.dispose(); // Dispose of current frame
+        LoginFrame = new JFrame("Login");
+        LoginFrame.setBounds(100, 100, 400, 300); // Set dimensions as needed
+        
+        // Add login components to loginFrame as needed
+        // Example:
+        JPanel loginPanel = new JPanel();
+        loginPanel.setBackground(Color.WHITE);
+        loginPanel.setBounds(0, 0, 400, 300);
+        
+        JLabel loginLabel = new JLabel("Login ");
+        loginLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        loginLabel.setBounds(125, 20, 150, 30);
+        loginPanel.add(loginLabel);
+        
+        // Add other components such as text fields, labels, buttons
+        
+        LoginFrame.getContentPane().add(loginPanel);
+        LoginFrame.setVisible(true);
+    }
+
+	public void setVisible(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+}
