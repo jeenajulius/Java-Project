@@ -1,0 +1,140 @@
+package Dashboard;
+
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+public class Login {
+
+    private JFrame frame;
+    private JTextField textid;
+    private JTextField textpwd;
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    Login window = new Login();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the application.
+     */
+    public Login() {
+        initialize();
+    }
+
+    /**
+     * Initialize the contents of the frame.
+     */
+    private void initialize() {
+        frame = new JFrame();
+        frame.getContentPane().setBackground(new Color(128, 64, 64));
+        frame.setBounds(100, 100, 917, 539);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(null);
+
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(128, 128, 128));
+        panel.setBounds(10, 10, 883, 100);
+        frame.getContentPane().add(panel);
+        panel.setLayout(null);
+
+        JLabel lblNewLabel = new JLabel("Login Page");
+        lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC, 30));
+        lblNewLabel.setBounds(343, 23, 183, 67);
+        panel.add(lblNewLabel);
+
+        JLabel lblNewLabel_1 = new JLabel("ID");
+        lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 27));
+        lblNewLabel_1.setBounds(196, 187, 85, 36);
+        frame.getContentPane().add(lblNewLabel_1);
+
+        JLabel lblNewLabel_2 = new JLabel("NAME");
+        lblNewLabel_2.setFont(new Font("Times New Roman", Font.BOLD, 26));
+        lblNewLabel_2.setBounds(196, 319, 175, 36);
+        frame.getContentPane().add(lblNewLabel_2);
+
+        JButton btnNewButton = new JButton("LOGIN");
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                loginButtonActionPerformed();
+            }
+        });
+        btnNewButton.setFont(new Font("Stencil", Font.ITALIC, 20));
+        btnNewButton.setBounds(370, 438, 118, 36);
+        frame.getContentPane().add(btnNewButton);
+
+        textid = new JTextField();
+        textid.setBackground(new Color(192, 192, 192));
+        textid.setBounds(459, 193, 206, 36);
+        frame.getContentPane().add(textid);
+        textid.setColumns(10);
+
+        textpwd = new JTextField();
+        textpwd.setBackground(new Color(192, 192, 192));
+        textpwd.setBounds(457, 319, 196, 39);
+        frame.getContentPane().add(textpwd);
+        textpwd.setColumns(10);
+    }
+
+    private void loginButtonActionPerformed() {
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "hr", "jeena2001");
+
+            pst = con.prepareStatement("SELECT * FROM customer WHERE cus_id=? AND cus_name=?");
+            pst.setString(1, textid.getText());
+            pst.setString(2, textpwd.getText());
+
+            rs = pst.executeQuery();
+
+            if (rs.next()) {
+                JOptionPane.showMessageDialog(null, "Login Successful!");
+                Order order = new Order();
+                order.setVisible(true);
+                frame.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "User invalid");
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (pst != null)
+                    pst.close();
+                if (con != null)
+                    con.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+}
